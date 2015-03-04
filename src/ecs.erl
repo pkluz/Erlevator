@@ -33,8 +33,10 @@
 % Starts the Elevator Control System (ECS) Process.
 start() ->
     start(?DefaultNumElevators, ?DefaultOpRange).
-
-start(NumberOfElevators, {Low, High}) when Low < High ->
+start(NumberOfElevators, {Low, High}) when is_integer(NumberOfElevators)
+                                      andalso is_integer(Low)
+                                      andalso is_integer(High)
+                                      andalso Low < High ->
     Number = max(NumberOfElevators, 1),
     gen_server:start_link({local, ?MODULE}, ?MODULE, [Number, {Low, High}], []);
 start(_, _) ->
@@ -105,7 +107,7 @@ update(_,_,_,_) ->
 
 % STEP:
 % Performs N simulation steps.
-% A step is defined as an elevators movement from its current floor to one of its immediate neighbours (i.e. 1 -> 2).
+% A step is defined as an elevators movement from its current floor to one of its immediate neighbors (i.e. 1 -> 2).
 %
 % Example:
 % $> ecs:step(2).

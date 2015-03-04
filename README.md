@@ -6,14 +6,15 @@ Erlevator is an Elevator Control System (ECS) Simulator in Erlang.
 	- On OS X using Homebrew: Type `brew install erlang` in your Terminal.
 	- Alternatively (and on other systems) visit [Erlang Solutions - Downloads](https://www.erlang-solutions.com/downloads/download-erlang-otp) and install it manually.
 - To compile the source, execute: `make all`.
-- The simulation relies on Erlang's built-in REPL. `cd` into the `bin` folder and execute `erl`.
+- The simulation relies on Erlang's built-in REPL. After building `cd` into the `bin` folder and execute `erl`.
 
 <br />
 # Noteworthy
 Once you have started Erlang's interactive REPL, here's what you should know:
 - `erl` **Starts the REPL**.
 - `CMD + C` followed by `a` – **Closes the REPL**.
-- All Erlang commands are terminated using a period "."
+- All Erlang commands are terminated using a period ".".
+- Upon executing an Erlevator command that does not return a value, the usual response is a tuple, consisting of a status and the responding process id (*E.g.* `{ok, <0.35.0>}`)
 
 <br />
 
@@ -24,21 +25,21 @@ Here is how to use the simulator in Erlang's REPL.
 ## 1. Start the ECS Process.
 Start the ECS using the default settings:
 ```
-$> ecs:start().
+erl> ecs:start().
 ``` 
 
-…alternatively you can customize the settings!
+…alternatively you can customize the settings.
 
 
 Start the ECS with **2** elevators, and an operating range of **16** floors (-5 to 15):
 ```
-$> ecs:start(2, {-5,10}).
+erl> ecs:start(2, {-5,10}).
 ```
 
 ## 2. Inquire about the Elevators Statuses.
 To find out more about each elevator, find out about their status:
 ```
-$> ecs:status().
+erl> ecs:status().
 ```
 ### Example Status Output:
 ```
@@ -49,13 +50,13 @@ $> ecs:status().
 To find out more about a specific elevator, address it by its ID.
 
 ```
-$> ecs:status(1).
+erl> ecs:status(1).
 ```
 
 ## 3. Request an Elevator.
 In order to request an Elevator going from the ground floor (0), to the third floor (3):
 ```
-$> ecs:request(0, 3).
+erl> ecs:request(0, 3).
 ```
 
 ## 4. Update an Elevator.
@@ -65,7 +66,7 @@ In order to override an Elevator's state, use the update method:
 -- Arg 3: Sets its direction (+1 = up, 0 = neutral, -1 = down).
 -- Arg 4: Triple of lists representing the queue of floors to visit (Current Queue, Next Queue, After Next Queue).
 
-$> ecs:update(0, 1, 1, {[3], [], []}).
+erl> ecs:update(0, 1, 1, {[3], [], []}).
 ```
 
 ## 5. Perform a Simulation Step.
@@ -73,14 +74,22 @@ A **step** is defined as an elevators movement from its current floor to one of 
 
 **Perform a (1) Step:**
 ```
-$> ecs:step().
+erl> ecs:step().
 ```
 
 **Perform 3 Steps:**
 
 ```
-$> ecs:step(3).
+erl> ecs:step(3).
 ```
+
+## 6. Stopping the Simulation.
+Instead of restarting the REPL, you can stop the ECS simulator and restart it (as describes in #1).
+```
+erl> ecs:stop().
+```
+
+**Note:** This will result in a scary looking error, which only informs of successful process termination. You can proceed as if nothing happened.
 
 <br />
 
@@ -129,3 +138,10 @@ After each direction reversal (i.e. QC empty), QN becomes QC, QAN becomes QN, an
 When traveling in a certain direction, the elevator either consumes the smallest or the largest element of the current queue (**QC**).
 
 This approach is superior to a simple FCFS (First-Come First-Serve), as it requires the elevators to **travel significantly less distance**, thus **reaching destination floors quicker** thereby **minimizing waiting time**.
+
+<br />
+
+# Outlook
+There is certainly lots of room for improvement, primarily with respect to tests. As the elevator processes currently rely on their own process-specific dictionary (to store information regarding their state) most functions have **side effects** i.e. are _not_ pure. This makes them difficult to test.
+
+In an improved version, the state would be supplied via function parameter instead of the process dictionary.
