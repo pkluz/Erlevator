@@ -121,7 +121,7 @@ SV = (N + 2) - D
 SV = (N + 1) - D
 
 -- Else:
-1
+SV = 1
 
 With N = (Number Of Floors - 1) and D = (Number of Floors between Elevator and Caller).
 ```
