@@ -1,0 +1,51 @@
+EXAMPLE DUMP FROM TERMINAL SESSION:
+
+pkluz [bin] *master
+$ ls
+EMPTY         ecs.beam      elevator.beam utils.beam
+pkluz [bin] *master
+$ erl
+Erlang/OTP 17 [erts-6.3] [source] [64-bit] [smp:8:8] [async-threads:10] [hipe] [kernel-poll:false] [dtrace]
+
+Eshell V6.3  (abort with ^G)
+1> ecs:start().
+{ok,<0.34.0>}
+2> ecs:status().
+["<0.35.0> - Elevator ID: 1, Floor: 0, Direction: NONE, Queue: Current Trip: [], Next Trip: [], After Next Trip: [].",
+ "<0.36.0> - Elevator ID: 2, Floor: 0, Direction: NONE, Queue: Current Trip: [], Next Trip: [], After Next Trip: []."]
+3> ecs:request(0,3).
+[{<0.35.0>,ok}]
+4> ecs:status().
+["<0.35.0> - Elevator ID: 1, Floor: 0, Direction: UP, Queue: Current Trip: [3], Next Trip: [], After Next Trip: [].",
+ "<0.36.0> - Elevator ID: 2, Floor: 0, Direction: NONE, Queue: Current Trip: [], Next Trip: [], After Next Trip: []."]
+5> ecs:step().
+[{<0.35.0>,ok},{<0.36.0>,ok}]
+6> ecs:status().
+["<0.35.0> - Elevator ID: 1, Floor: 1, Direction: UP, Queue: Current Trip: [3], Next Trip: [], After Next Trip: [].",
+ "<0.36.0> - Elevator ID: 2, Floor: 0, Direction: NONE, Queue: Current Trip: [], Next Trip: [], After Next Trip: []."]
+7> ecs:request(0, -1).
+[{<0.36.0>,ok}]
+8> ecs:request(0, -3).
+[{<0.36.0>,ok}]
+9> ecs:request(2, 4).
+[{<0.35.0>,ok}]
+10> ecs:status().
+["<0.35.0> - Elevator ID: 1, Floor: 1, Direction: UP, Queue: Current Trip: [2,3,4], Next Trip: [], After Next Trip: [].",
+ "<0.36.0> - Elevator ID: 2, Floor: 0, Direction: DOWN, Queue: Current Trip: [-3,-1], Next Trip: [], After Next Trip: []."]
+11> ecs:step().
+[{<0.35.0>,ok},{<0.36.0>,ok}]
+12> ecs:status().
+["<0.35.0> - Elevator ID: 1, Floor: 2, Direction: UP, Queue: Current Trip: [3,4], Next Trip: [], After Next Trip: [].",
+ "<0.36.0> - Elevator ID: 2, Floor: -1, Direction: DOWN, Queue: Current Trip: [-3], Next Trip: [], After Next Trip: []."]
+13> ecs:step().  
+[{<0.35.0>,ok},{<0.36.0>,ok}]
+14> ecs:status().
+["<0.35.0> - Elevator ID: 1, Floor: 3, Direction: UP, Queue: Current Trip: [4], Next Trip: [], After Next Trip: [].",
+ "<0.36.0> - Elevator ID: 2, Floor: -2, Direction: DOWN, Queue: Current Trip: [-3], Next Trip: [], After Next Trip: []."]
+15> ecs:step().  
+[{<0.35.0>,ok},{<0.36.0>,ok}]
+16> ecs:status().
+["<0.35.0> - Elevator ID: 1, Floor: 4, Direction: NONE, Queue: Current Trip: [], Next Trip: [], After Next Trip: [].",
+ "<0.36.0> - Elevator ID: 2, Floor: -3, Direction: NONE, Queue: Current Trip: [], Next Trip: [], After Next Trip: []."]
+ 17> ...
+
