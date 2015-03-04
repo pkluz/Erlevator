@@ -1,10 +1,9 @@
 -module(elevator).
 -export([
     start/2,
-    start_loop/2,
-    loop/0
+    start_loop/2
 ]).
--compile(export_all).
+
 
 start(ID, {Low, High}) ->
     spawn(elevator, start_loop, [ID, {Low, High}]).
@@ -34,7 +33,7 @@ loop() ->
             schedule_request(From, To),
             Sender ! {self(), {request, ok}};
         {Sender, {step, Size}} ->
-            steps(Size),
+            perform_steps(Size),
             Sender ! {self(), {step, ok}};
         {Sender, {update, Floor, Direction, {QC, QN, QAN}}} ->
             put(current_floor, Floor),
@@ -53,8 +52,8 @@ loop() ->
 
 % Performs N simulation steps.
 % 1 step = 1 elevator movement.
-steps(N) when N =< 0 -> true;
-steps(N) ->
+perform_steps(N) when N =< 0 -> true;
+perform_steps(N) ->
     QueueCurrent = get(queue_current),
     QueueNext = get(queue_next),
     Direction = case get(current_direction) =:= 0 of
@@ -63,10 +62,10 @@ steps(N) ->
     end,
     case gb_sets:size(QueueCurrent) > 0 of
         true -> step(Direction), 
-                step(N - 1);
+                perform_steps(N - 1);
         false ->
             case gb_sets:size(QueueNext) > 0 of
-                true -> reverse_direction(), step(Direction), step(N - 1);
+                true -> reverse_direction(), step(Direction), perform_steps(N - 1);
                 false -> idle()
             end
     end.

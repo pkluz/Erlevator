@@ -14,13 +14,15 @@ Once you have started Erlang's interactive REPL, here's what you should know:
 - `erl` **Starts the REPL**.
 - `CMD + C` followed by `a` – **Closes the REPL**.
 - All Erlang commands are terminated using a period ".".
-- Upon executing an Erlevator command that does not return a value, the usual response is a tuple, consisting of a status and the responding process id (*E.g.* `{ok, <0.35.0>}`)
+- Upon executing an Erlevator command that does not return a value, the usual response is a tuple, consisting of a status and the responding process id (*E.g.* `{ok, <0.35.0>}`).
 
 <br />
 
 # How-To: Simulation
 
 Here is how to use the simulator in Erlang's REPL.
+
+> Please note, that you _have_ to `start` the ecs process first, before making any calls. In case of a crash or after stopping the ecs process, you have to restart it again.
 
 ## 1. Start the ECS Process.
 Start the ECS using the default settings:
@@ -145,3 +147,5 @@ This approach is superior to a simple FCFS (First-Come First-Serve), as it requi
 There is certainly lots of room for improvement, primarily with respect to tests. As the elevator processes currently rely on their own process-specific dictionary (to store information regarding their state) most functions have **side effects** i.e. are _not_ pure. This makes them difficult to test.
 
 In an improved version, the state would be supplied via function parameter instead of the process dictionary.
+
+Additionally, a supervisor could be introduced, to prevent elevators from crashing – just in case.
