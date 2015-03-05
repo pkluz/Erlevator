@@ -96,11 +96,11 @@ request(_, _) ->
 % E.g. when QC contains values, >= "Floor", with the "Direction" specifying -1.
 % I.e. Floors that cannot be reached during a trip as they lie in the opposite direction.
 update(ElevatorID, Floor, Direction, {QC, QN, QAN}) when is_integer(ElevatorID)
-													andalso is_integer(Direction)
-													andalso is_integer(Floor)
-									   				andalso is_list(QC)
-									   				andalso is_list(QN)
-									   				andalso is_list(QAN) ->
+                                                    andalso is_integer(Direction)
+                                                    andalso is_integer(Floor)
+                                                    andalso is_list(QC)
+                                                    andalso is_list(QN)
+                                                    andalso is_list(QAN) ->
     gen_server:call(?MODULE, {update, ElevatorID, Floor, Direction, {QC, QN, QAN}});
 update(_,_,_,_) ->
     message({invalid_args, "update()"}).
