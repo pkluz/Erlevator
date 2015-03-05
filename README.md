@@ -71,6 +71,8 @@ In order to override an Elevator's state, use the update method:
 erl> ecs:update(0, 1, 1, {[3], [], []}).
 ```
 
+> Note: Please be cautious when updating as the [updates are forced](https://github.com/pkluz/Erlevator/blob/master/src/ecs.erl#L92-97).
+
 ## 5. Perform a Simulation Step.
 A **step** is defined as an elevators movement from its current floor to one of its immediate neighbors (i.e. 1 -> 2).
 
