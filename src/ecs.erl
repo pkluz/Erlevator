@@ -190,7 +190,7 @@ code_change(_OldVsn, State, _Extra) -> {ok, State}.
 
 % HELPERS
 
-% Collects responses from elevator processes. More fine grained than nece
+% Collects responses from elevator processes. More fine grained than necessary.
 collect([]) -> [];
 collect(PIDs) ->
     receive
